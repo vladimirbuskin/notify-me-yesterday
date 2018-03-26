@@ -13,7 +13,7 @@ let lastMessage = ''
 export default function() {
 
   // Create a bot that uses 'polling' to fetch new updates
-  const bot = new TelegramBot(TELEGRAM_BOT_NOTIFYME, {polling: true});
+  const bot = new TelegramBot(TELEGRAM_BOT_NOTIFYME_TOKEN, {polling: true});
 
   // check
   bot.onText(/\/check/, (msg, match) => {
