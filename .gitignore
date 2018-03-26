@@ -3,4 +3,5 @@ coverage
 data
 .vscode
 .nyc_output
+.env
 /lib

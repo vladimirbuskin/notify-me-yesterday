@@ -2,7 +2,7 @@ import TelegramBot from 'node-telegram-bot-api'
 
 
 // replace the value below with the Telegram token you receive from @BotFather
-const { TELEGRAM_BOT_NOTIFYME } = process.env
+const { TELEGRAM_BOT_NOTIFYME_TOKEN } = process.env
 
 const addresses = {
   '3521887': 1,

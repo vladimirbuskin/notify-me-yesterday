@@ -14,6 +14,8 @@ let lastValue = null;
 
 async function run() {
 
+  console.log('====================')
+
   var $ = await getNotCached(
     'http://www.gofortravel.ru/usa/visa/application/our-help/latest-news'
   )
@@ -49,7 +51,6 @@ let job = new CronJob(
   // fire
   function () {
     //console.log('You will see this message every second', new Date());
-    console.log('====================')
     run();
   }, 
   // stop
