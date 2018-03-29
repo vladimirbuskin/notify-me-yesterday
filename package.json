@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node -r ./src/init ./src/index.js",
-    "dev": "nodemon -r ./src/init ./src/index.js"
+    "dev": "nodemon -r ./src/init ./src/index.js",
+    "t": "node -r ./src/init ./call/index.js"
   },
   "author": "",
   "license": "ISC",

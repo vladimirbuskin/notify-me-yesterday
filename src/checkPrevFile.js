@@ -9,7 +9,7 @@ var readFile = Promise.promisify(fs.readFile);
 
 export default async function(resultName, newValue) {
   
-  let fileName = './data/'+resultName+'.txt';
+  let fileName = './data/'+resultName;
 
   try {
     var prevValue = await readFile(fileName, 'utf8');
