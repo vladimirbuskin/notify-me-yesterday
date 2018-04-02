@@ -1,6 +1,6 @@
 import fs from 'fs'
 import Promise from 'bluebird'
-
+import jsdiff from 'diff'
 
 var writeFile = Promise.promisify(fs.writeFile);
 var readFile = Promise.promisify(fs.readFile);
@@ -16,7 +16,12 @@ export default async function(resultName, newValue) {
     // value changed
     if (prevValue != newValue) {
       await writeFile(fileName, newValue);
-      return newValue;
+
+      var diff = jsdiff.diffChars(prevValue, newValue);
+
+      console.log(diff);
+
+      return diff;
     }
     // value the same
     else

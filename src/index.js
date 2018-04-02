@@ -6,10 +6,11 @@ import Koa from 'koa-mr'
 import getCached from './getCached'
 import getNotCached from './getNotCached'
 import checkPrev from './checkPrev'
+import checkPrevFile from './checkPrevFile'
 import Notifier from './notifier'
 
 const app = new Koa()
-const notifier = Notifier();
+let notifier = null;
 let lastValue = null;
 
 async function run() {
@@ -20,12 +21,8 @@ async function run() {
     'http://www.gofortravel.ru/usa/visa/application/our-help/latest-news'
   )
 
-  // get newValue
-  var comm = $('#comment-body-16658')
-  lastValue = comm[0].children[2].data;
-
   // save and check if changed
-  var changedValue = await checkPrev('zapis', lastValue);
+  var changedValue = await checkPrevFile('zapis.html', lastValue);
   
   // update last value
   notifier.updateLast(lastValue);
@@ -33,17 +30,45 @@ async function run() {
   // if changed
   if (changedValue) {
     console.log('Value Changed, Notify!'); 
-    notifier.send(changedValue);
+    notifier.send(changedValue, {address:'me'});
   }
   else {
     console.log('Not Changed.');
   }
+
 }
 
+async function getValue() {
+
+  console.log('====================')
+
+  var $ = await getNotCached(
+    'http://www.gofortravel.ru/usa/visa/application/our-help/latest-news'
+  )
+  
+  // get newValue
+  var comm = $('.comments-list')
+  var bodies = comm.find('.comment-body')
+
+  var bds = [];
+  bodies.each(function(i, elem) {
+    bds[i] = $(this).text();
+  });
+
+  lastValue = bds.slice(0,3).join('\n========================\n');
+
+  console.log(lastValue);
+
+
+  return lastValue;
+}
+
+notifier = Notifier({getValue})
+
 // return 
-app.get('/', function (ctx) {
+/*app.get('/', function (ctx) {
   ctx.body = lastValue
-})
+})*/
 
 // create check job
 let job = new CronJob(
@@ -51,7 +76,7 @@ let job = new CronJob(
   // fire
   function () {
     //console.log('You will see this message every second', new Date());
-    run();
+    //run();
   }, 
   // stop
   function () {

@@ -1,4 +1,4 @@
-import TelegramBot from 'node-telegram-bot-api'
+import TeleBot from 'telebot'
 
 
 // replace the value below with the Telegram token you receive from @BotFather
@@ -8,36 +8,55 @@ const addresses = {
   '3521887': 1,
   '7573518': 1
 }
+
+const addressMe = '3521887';
+
 let lastMessage = ''
 
-export default function() {
+export default function({getValue}) {
 
   // Create a bot that uses 'polling' to fetch new updates
-  const bot = new TelegramBot(TELEGRAM_BOT_NOTIFYME_TOKEN, {polling: true});
+  const bot = new TeleBot({
+    token: TELEGRAM_BOT_NOTIFYME_TOKEN
+  });
 
   // check
-  bot.onText(/\/check/, (msg, match) => {
-    const chatId = msg.chat.id;
-    bot.sendMessage(chatId, lastMessage || '(no value yet, check later)');
+  bot.on(['/check'], async (msg, match) => {
+    const chatId = msg.from.id;
+
+    var val = await getValue();
+    await bot.sendMessage(chatId, val);
   });
 
   // any message
-  bot.on('message', (msg) => {
-    const chatId = msg.chat.id;
-    addresses[chatId + ''] = 1;
+  bot.on('*', (msg) => {
+    console.log('* got')
+    addresses[msg.from.id + ''] = 1;
   });
 
+  // start
+  bot.start();
 
   // response
   return {
     bot: bot,
 
     // methods
-    send: function(message) {
-      // send to all addresses
+    send: function(message, options) {
+
       let addr = Object.keys(addresses);
-      addr.forEach(a => {
-        bot.sendMessage(a, message)
+      if (options.address == 'me')
+      {
+        addr = [addressMe];
+      }
+
+      // send
+      addr.forEach(async a => {
+        try {
+          await bot.sendMessage(a, message, /*{ parseMode: 'Markdown' }*/)
+        } catch(e) {
+          console.log('error', e);
+        }
       })
     },
 
