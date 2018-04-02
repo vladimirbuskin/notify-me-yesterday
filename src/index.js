@@ -28,7 +28,7 @@ async function run() {
   // if changed
   if (changedValue) {
     console.log('Value Changed, Notify!'); 
-    notifier.send(changedValue, {address:'me'});
+    notifier.send(changedValue/*, {address:'me'}*/);
   }
   else {
     console.log('Not Changed.');
