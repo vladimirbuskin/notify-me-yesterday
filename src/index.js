@@ -17,9 +17,7 @@ async function run() {
 
   console.log('====================')
 
-  var $ = await getNotCached(
-    'http://www.gofortravel.ru/usa/visa/application/our-help/latest-news'
-  )
+  lastValue = await getValue();
 
   // save and check if changed
   var changedValue = await checkPrevFile('zapis.html', lastValue);
@@ -57,9 +55,6 @@ async function getValue() {
 
   lastValue = bds.slice(0,3).join('\n========================\n');
 
-  console.log(lastValue);
-
-
   return lastValue;
 }
 
@@ -72,11 +67,11 @@ notifier = Notifier({getValue})
 
 // create check job
 let job = new CronJob(
-  '*/30 * * * * *', 
+  '*/5 * * * * *', 
   // fire
   function () {
     //console.log('You will see this message every second', new Date());
-    //run();
+    run();
   }, 
   // stop
   function () {
